@@ -1,0 +1,8 @@
+// provide basic event handling
+
+class Events {
+	var _0; var _1; var _2; var _3; var _4; var _5; var _6; var _7;
+	var quit; var resize; var macro;
+	
+	func get get_events self;
+}

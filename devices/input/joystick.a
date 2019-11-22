@@ -1,0 +1,24 @@
+// interface with joysticks
+
+import lib/device.a
+
+class Joystick {
+	var id;
+	Device->var device;
+	
+	func construct(var _id) {
+		self.id = _id;
+		self.device = new(Device).construct("joystick");
+		
+		return self;
+	}
+	
+	func name return self.device.send(0x6E, self.id);
+	func axis(var axis) return ?self.device.send(0x61, self.id, axis);
+	
+	// static stuff
+	
+	func count {
+		return ?Device.send("joystick", 0x63);
+	}
+}
