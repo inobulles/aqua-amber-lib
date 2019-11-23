@@ -1,0 +1,25 @@
+// gl camera
+
+import lib/devices/gl/gl.a
+
+class Gl_camera {
+	func function(var command, var left, var right, var bottom, var top, var near, var far) {
+		var parameters = new(Gl.Parameters);
+		parameters.command = command;
+		
+		parameters.left   = left;
+		parameters.right  = right;
+		parameters.bottom = bottom;
+		parameters.top    = top;
+		
+		parameters.near = near;
+		parameters.far  = far;
+		
+		var result = Gl.function(parameters);
+		mfree parameters, Gl.Parameters;
+		return result;
+	}
+	
+	func frustum(var left, var right, var bottom, var top, var near, var far) return self.function(0x66, left, right, bottom, top, near, far);
+	func ortho  (var left, var right, var bottom, var top, var near, var far) return self.function(0x6F, left, right, bottom, top, near, far);
+}

@@ -1,0 +1,20 @@
+// gl utility functions
+
+import lib/device.a
+
+class Gl {
+	class Parameters {
+		var command;
+		var left; var right; var bottom; var top; var near; var far;
+		var x; var y; var z; var w;
+		var vertices; var vertex_count;
+		var red; var green; var blue; var alpha;
+		var faces; var face_count;
+		var colours; var colour_count;
+		var texture_coords; var texture_coord_count;
+		var slot; var texture;
+		var sub_command;
+	}
+	
+	func function(var parameters) return ?Device.send("gl", parameters);
+}

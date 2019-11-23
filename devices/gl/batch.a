@@ -1,0 +1,25 @@
+// gl batches
+
+import lib/devices/gl/gl.a
+
+class Gl_batch {
+	Device->var device;
+	var batch;
+	
+	func construct {
+		self.device = new(Device).construct("gl batch");
+		
+		self.device.send(0x63, 0);
+		self.batch = self.device.arg1;
+		
+		return self;
+	}
+	
+	func add_ivx(var ivx) {
+		self.device.send(0x69, self.batch, ivx);
+	}
+	
+	func draw {
+		self.device.send(0x70, self.batch);
+	}
+}

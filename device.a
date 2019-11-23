@@ -11,10 +11,14 @@ class Device {
 		return self;
 	}
 	
+	var arg0; var arg1; var arg2; var arg3; var arg4; var arg5; var arg6;
 	func send(var _arg0, var _arg1, var _arg2, var _arg3, var _arg4, var _arg5, var _arg6) {
-		var arg6 = _arg6; var arg5 = _arg5; var arg4 = _arg4; var arg3 = _arg3; var arg2 = _arg2; var arg1 = _arg1; var arg0 = _arg0;
-		
-		if (self) return send_device(self.device, &arg0);
-		else return send_device(create_device(arg0), &arg1);
+		if (self) {
+			self.arg6 = _arg6; self.arg5 = _arg5; self.arg4 = _arg4; self.arg3 = _arg3; self.arg2 = _arg2; self.arg1 = _arg1; self.arg0 = _arg0;
+			return send_device(self.device, &self.arg0);
+		} else {
+			var arg6 = _arg6; var arg5 = _arg5; var arg4 = _arg4; var arg3 = _arg3; var arg2 = _arg2; var arg1 = _arg1; var arg0 = _arg0;
+			return send_device(create_device(arg0), &arg1);
+		}
 	}
 }
