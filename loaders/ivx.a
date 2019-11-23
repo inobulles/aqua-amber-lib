@@ -1,1 +1,51 @@
 // load Inobulles Vertex files
+
+import lib/devices/io/fs.a
+
+class Ivx {
+	class Ivx_meta {
+		var version_major;
+		var version_minor;
+		var is_index_size_short;
+		byte[1024] name;
+		
+		var vertex_count;
+		var coords_count;
+		var  index_count;
+		
+		var vertex_bytes;
+		var coords_bytes;
+		var  index_bytes;
+	}
+	
+	Ivx_meta->var meta;
+	
+	var vertex_pointer;
+	var coords_pointer;
+	var  index_pointer;
+	
+	func construct(var path) {
+		var data; var bytes;
+		if (Fs.read(path, &data, &bytes)) {
+			print "WARNING Failed to load IVX file (probably wrong path, " ++ path ++ ")\n";
+			return 0;
+		}
+		
+		self.meta = new(Ivx_meta);
+		mcpy self.meta, data, Ivx_meta;
+		data = data + Ivx_meta;
+		
+		self.vertex_pointer = new(self.meta.vertex_count * self.meta.vertex_bytes);
+		self.coords_pointer = new(self.meta.coords_count * self.meta.coords_bytes);
+		self. index_pointer = new(self.meta. index_count * self.meta. index_count);
+		
+		mcpy self.vertex_pointer, data, self.meta.vertex_count * self.meta.vertex_bytes;
+		data = data + self.meta.vertex_count * self.meta.vertex_bytes;
+		
+		mcpy self.coords_pointer, data, self.meta.coords_count * self.meta.coords_bytes;
+		data = data + self.meta.coords_count * self.meta.coords_bytes;
+		
+		mcpy self.index_pointer, data, self.meta.index_count * self.meta.index_bytes;
+		return self;
+	}
+}

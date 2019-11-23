@@ -1,0 +1,10 @@
+// interface with file system
+
+import lib/device.a
+
+class Fs {
+	// static functions
+	
+	func read(var path, var data_pointer, var bytes_pointer) return ?Device.send("fs", 0x72, path, data_pointer, bytes_pointer);
+	func write(var path, var data, var bytes) return ?Device.send("fs", 0x77, path, data, bytes);
+}

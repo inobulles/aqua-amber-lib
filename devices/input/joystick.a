@@ -6,8 +6,8 @@ class Joystick {
 	var id;
 	Device->var device;
 	
-	func construct(var _id) {
-		self.id = _id;
+	func construct(var id) {
+		self.id = id;
 		self.device = new(Device).construct("joystick");
 		
 		return self;
@@ -16,7 +16,7 @@ class Joystick {
 	func name return self.device.send(0x6E, self.id);
 	func axis(var axis) return ?self.device.send(0x61, self.id, axis);
 	
-	// static stuff
+	// static functions
 	
 	func count {
 		return ?Device.send("joystick", 0x63);

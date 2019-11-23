@@ -4,8 +4,8 @@ class Device {
 	var name;
 	var device;
 	
-	func construct(var _name) {
-		self.name = _name;
+	func construct(var name) {
+		self.name = name;
 		self.device = create_device(self.name);
 		
 		return self;
