@@ -9,7 +9,7 @@ class Gl_batch {
 	func construct {
 		self.device = new(Device).construct("gl batch");
 		
-		self.device.send(0x63, 0);
+		self.device.send(0x63);
 		self.batch = self.device.arg1;
 		
 		return self;

@@ -1,0 +1,21 @@
+// textures
+
+import lib/device.a
+
+class Texture {
+	func texture_sharp(var sharp) { // static
+		if (sharp) return ?Device.send("texture", "sharp 1");
+		else return ?Device.send("texture", "sharp 0");
+	}
+	
+	var id;
+	
+	func construct(var bitmap, var bpp, var width, var height) {
+		self.id = ?Device.send("texture", 0x63, bitmap, bpp, width, height);
+		return self;
+	}
+	
+	func destruct {
+		Device.send("texture", 0x72, self.id);
+	}
+}
