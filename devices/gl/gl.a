@@ -1,6 +1,7 @@
 // gl utility functions
 
 import lib/device.a
+import lib/devices/graphics/texture.a
 
 class Gl {
 	class Parameters {
@@ -16,5 +17,17 @@ class Gl {
 		var sub_command;
 	}
 	
-	func function(var parameters) return ?Device.send("gl", parameters);
+	func function(var parameters) return ?Device.send_pointer("gl", parameters);
+	
+	func bind_texture(var slot, Texture->var texture) {
+		var parameters = new(Parameters);
+		parameters.command = 0x74;
+		
+		parametres.slot = slot;
+		parameters.texture = texture.texture;
+		
+		var result = self.function(parameters);
+		mfree parameters, Parameters;
+		return result;
+	}
 }

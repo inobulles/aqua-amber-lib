@@ -1,0 +1,14 @@
+// provides trigonometric and general useful math functions
+
+import lib/device.a
+
+var PRECISION = 1000000;
+var PRECISION_ROOT = 1000;
+var FLOAT_TAU = 6283185;
+
+class Math {
+	func sqrt(var x) return ?Device.send("math", 0x74727173, x) + PRECISION_ROOT; // static
+	func sin(var x) return ?Device.send("math", 0x6E6973, x); // static
+	func cos(var x) return ?Device.send("math", 0x6E6973, x + FLOAT_TAU / 4); // static
+	func deg(var x) return x * 360 * PRECISION / FLOAT_TAU; // static
+}

@@ -11,6 +11,11 @@ class Device {
 		return self;
 	}
 	
+	func send_pointer(var name_or_pointer, var pointer) {
+		if (self) return send_device(self.device, name_or_pointer);
+		else return send_device(create_device(name_or_pointer), pointer);
+	}
+	
 	var arg0; var arg1; var arg2; var arg3; var arg4; var arg5; var arg6;
 	func send(var _arg0, var _arg1, var _arg2, var _arg3, var _arg4, var _arg5, var _arg6) {
 		if (self) {
