@@ -1,0 +1,32 @@
+// gl shaders
+
+import lib/devices/gl/gl.a
+
+class Gl_shader {
+	Device->var device;
+	var program_pointer;
+	
+	var vert_shader_code;
+	var frag_shader_code;
+	var geom_shader_code;
+	
+	func construct(var vert_shader_code, var frag_shader_code, var geom_shader_code) {
+		self.vert_shader_code = vert_shader_code;
+		self.frag_shader_code = frag_shader_code;
+		self.geom_shader_code = geom_shader_code;
+		
+		self.device = new(Device).construct("shader");
+		self.device.send 0x63, &self.program_pointer, self.vert_shader_code, self.frag_shader_code, self.geom_shader_code;
+		
+		return self;
+	}
+	
+	func default { // static
+		Device.send "shader", 0x75, 0;
+	}
+	
+	func use { // hybrid
+		if (self) self.device.send 0x75, &self.program_pointer;
+		else default();
+	}
+}
