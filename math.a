@@ -11,4 +11,17 @@ class Math {
 	func sin(var x) return ?Device.send("math", 0x6E6973, x); // static
 	func cos(var x) return ?Device.send("math", 0x6E6973, x + FLOAT_TAU / 4); // static
 	func deg(var x) return x * 360 * PRECISION / FLOAT_TAU; // static
+	func atan2(var x, var y) return ?Device.send("math", 0x326E617461, x, y); // static
+	
+	func min(var x, var y) { // static
+		if (x < y) return x;
+		else return y;
+	} func max(var x, var y) { // static
+		if (x > y) return x;
+		else return y;
+	}
+	
+	func mul_float(var x, var y) { // static
+		return x / PRECISION_ROOT * (y / PRECISION_ROOT);
+	}
 }

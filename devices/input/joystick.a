@@ -19,6 +19,12 @@ class Joystick {
 	
 	func rumble(var strength, var seconds) return ?self.device.send(0x68, self.id, strength, seconds);
 	
+	func axis_deadzone(var axis, var deadzone) {
+		var value = self.axis(axis);
+		if (value < -deadzone or value > deadzone) return value;
+		return 0;
+	}
+	
 	// static functions
 	
 	func count {
