@@ -10,10 +10,6 @@ class Gl_shader {
 	var frag_shader_code;
 	var geom_shader_code;
 	
-	var aux;
-	var radius;
-	var threshold;
-	
 	func construct(var vert_shader_code, var frag_shader_code, var geom_shader_code) {
 		self.vert_shader_code = vert_shader_code;
 		self.frag_shader_code = frag_shader_code;
@@ -25,9 +21,11 @@ class Gl_shader {
 		return self;
 	}
 	
-	func locations { // hybrid
-		if (self) self.device.send 0x6C, self.aux, self.radius, self.threshold;
-		else Device.send "shader", 0x6C, 0, 0, 0;
+	func uniform_location(var string) return ?self.device.send(0x67, &self.program_pointer, string);
+	
+	func set_uniform(var location, var data, var type) { // hybrid
+		if (self) self.device.send 0x73, location, data, type;
+		else Device.send "shader", 0x73, location, data, type;
 	}
 	
 	func default { // static

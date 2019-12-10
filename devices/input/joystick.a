@@ -17,7 +17,9 @@ class Joystick {
 	func axis(var axis) return ?self.device.send(0x61, self.id, axis);
 	func button(var button) return ?self.device.send(0x62, self.id, button);
 	
-	func rumble(var strength, var seconds) return ?self.device.send(0x68, self.id, strength, seconds);
+	func rumble(var strength, var seconds, var period, var direction) {
+		return ?self.device.send(0x68, self.id, strength, seconds, period, direction);
+	}
 	
 	func axis_deadzone(var axis, var deadzone) {
 		var value = self.axis(axis);
