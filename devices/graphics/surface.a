@@ -1,0 +1,21 @@
+
+import lib/device.a
+import lib/devices/graphics/texture.a
+
+class Surface {
+	Device->var device;
+	var surface;
+	
+	func draw   (var x, var y)                        self.device.send 0x64, self.surface, x, y;
+	func size   (var x, var y)                        self.device.send 0x7A, self.surface, x, y;
+	func scroll (var x, var y, var width, var height) self.device.send 0x73, self.surface, x, y, width, height;
+	func layer  (var layer)                           self.device.send 0x6C, self.surface, layer;
+	func colour (var r, var g, var b, var a)          self.device.send 0x63, self.surface, r, g, b, a;
+	func texture(Texture->var texture)                self.device.send 0x74, self.surface, texture.id;
+	
+	func construct {
+		self.device = new(Device).construct("surface");
+		self.surface = ?self.device.send(0x6E);
+		return self;
+	}
+}
