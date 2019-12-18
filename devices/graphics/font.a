@@ -1,0 +1,26 @@
+// create textures from fonts
+
+import lib/devices/graphics/texture.a
+
+class Font {
+	var id;
+	
+	var data;
+	var bytes;
+	
+	func create_texture(var text) {
+		var texture = new(Texture);
+		texture.id = ?Device.send("font", 0x74, self.id, text);
+		return texture;
+	}
+	
+	func get_width (var text) return ?Device.send("font", 0x77, self.id, text);
+	func get_height(var text) return ?Device.send("font", 0x68, self.id, text);
+	
+	func size(var size) Device.send("font", 0x73, self.id, size);
+	
+	func destruct {
+		mfree self.data, self.bytes;
+		Device.send "font", 0x72, self.id;
+	}
+}

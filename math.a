@@ -13,12 +13,39 @@ class Math {
 	func deg(var x) return x * 360 * PRECISION / FLOAT_TAU; // static
 	func atan2(var x, var y) return ?Device.send("math", 0x326E617461, x, y); // static
 	
+	func pixels_x(var x) return x * PRECISION / video_width ();
+	func pixels_y(var y) return y * PRECISION / video_height();
+	
+	func string_to_int(var string) { // static
+		var value = 0;
+		var exponent = 100000000000000000;
+		
+		var index = 0;
+		loop {
+			var current = *(string + index);
+			if (not current) break
+			
+			value = value + (current - 0x30) * exponent;
+			exponent = exponent / 10;
+			index = index + 1;
+		}
+		
+		return value / exponent / 10;
+	}
+	
 	func min(var x, var y) { // static
 		if (x < y) return x;
 		else return y;
-	} func max(var x, var y) { // static
+	}
+	
+	func max(var x, var y) { // static
 		if (x > y) return x;
 		else return y;
+	}
+	
+	func abs(var x) { // static
+		if (x < 0) return -x;
+		return x;
 	}
 	
 	func mul_float(var x, var y) { // static

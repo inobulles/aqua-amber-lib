@@ -1,0 +1,23 @@
+// interface with keyboards
+
+import lib/device.a
+
+class Keyboard {
+	var id;
+	Device->var device;
+	
+	func construct(var id) {
+		self.id = id;
+		self.device = new(Device).construct("keyboard");
+		
+		return self;
+	}
+	
+	func scancode(var key) return ?self.device.send(0x73, self.id, key);
+	
+	// static functions
+	
+	func count {
+		return ?Device.send("keyboard", 0x63);
+	}
+}

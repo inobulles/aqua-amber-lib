@@ -17,7 +17,7 @@ class Bmp {
 		mfree device.arg0, device.arg1;
 		
 		var texture = new(Texture);
-		texture.texture = ?result;
+		texture.id = ?result;
 		return texture;
 	}
 }

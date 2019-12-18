@@ -1,1 +1,23 @@
-// load JPEG files
+// load JPEG image files
+
+import lib/devices/graphics/texture.a
+import lib/devices/io/fs.a
+
+class Jpg {
+	func create_texture(var path) { // static
+		var data; var bytes;
+		if (Fs.read(path, &data, &bytes)) {
+			print "WARNING Failed to load JPEG file (probably wrong path, " ++ path ++ ")\n";
+			return 0;
+		}
+		
+		Device->var device = new(Device).construct("jpg");
+		var result = device.send(data, bytes);
+		
+		mfree device.arg0, device.arg1;
+		
+		var texture = new(Texture);
+		texture.id = ?result;
+		return texture;
+	}
+}
