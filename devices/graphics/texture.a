@@ -3,9 +3,8 @@
 import lib/device.a
 
 class Texture {
-	func sharp(var is_sharp) { // static
-		if (is_sharp) return ?Device.send_pointer("texture", "sharp 1");
-		else return ?Device.send_pointer("texture", "sharp 0");
+	func filter(var mode) { // static
+		return ?Device.send("texture", 0x66, mode);
 	}
 	
 	var id;

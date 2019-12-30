@@ -1,1 +1,41 @@
 // load Portable Network Graphics files
+
+import lib/devices/graphics/texture.a
+import lib/devices/io/fs.a
+
+class Png {
+	var bitmap;
+	var width;
+	var height;
+	var bpp;
+	
+	func construct(var path) {
+		var data; var bytes;
+		if (Fs.read(path, &data, &bytes)) {
+			print "WARNING Failed to load PNG file (probably wrong path, " ++ path ++ ")\n";
+			return 0;
+		}
+		
+		Device->var device = new(Device).construct("png");
+		var result = device.send(data, bytes);
+		
+		self.bitmap = ?(result + 0 * 8);
+		self.width  = ?(result + 1 * 8);
+		self.height = ?(result + 2 * 8);
+		self.bpp    = ?(result + 3 * 8) * 8;
+		
+		mfree device.arg0, device.arg1;
+		return self;
+	}
+	
+	func destruct {
+		mfree self.bitmap, self.bpp / 8 * self.width * self.height;
+	}
+	
+	func create_texture(var path) { // static
+		Png->var object = new(Png).construct(path);
+		var texture = new(Texture).construct(object.bitmap, object.bpp, object.width, object.height);
+		object.destruct();
+		return texture;
+	}
+}

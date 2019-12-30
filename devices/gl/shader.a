@@ -1,6 +1,7 @@
 // gl shaders
 
 import lib/devices/gl/gl.a
+var gl_shader_zero = 0;
 
 class Gl_shader {
 	Device->var device;
@@ -29,7 +30,7 @@ class Gl_shader {
 	}
 	
 	func default { // static
-		Device.send "shader", 0x75, 0;
+		Device.send "shader", 0x75, &gl_shader_zero;
 	}
 	
 	func use { // hybrid

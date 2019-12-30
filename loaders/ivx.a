@@ -16,6 +16,9 @@ class Ivx {
 		var vertex_bytes;
 		var coords_bytes;
 		var  index_bytes;
+		
+		var normal_count; // only for v1.1
+		var normal_bytes;
 	}
 	
 	Ivx_meta->var meta;
@@ -23,6 +26,7 @@ class Ivx {
 	var vertex_pointer;
 	var coords_pointer;
 	var  index_pointer;
+	var normal_pointer;
 	
 	func construct(var path) {
 		var data; var bytes;
@@ -33,11 +37,17 @@ class Ivx {
 		
 		self.meta = new(Ivx_meta);
 		mcpy self.meta, data, Ivx_meta;
-		data = data + Ivx_meta;
+		
+		var use_normals = (self.meta.version_major * 100 + self.meta.version_minor) >= 101;
+		data = data + Ivx_meta - not use_normals * 2 * 8; // lop off the last 16 bytes (Ivx_meta.normal_count and Ivx_meta.normal_bytes) if not using normals
 		
 		self.vertex_pointer = new(self.meta.vertex_count * self.meta.vertex_bytes);
 		self.coords_pointer = new(self.meta.coords_count * self.meta.coords_bytes);
-		self. index_pointer = new(self.meta. index_count * self.meta. index_count);
+		self. index_pointer = new(self.meta. index_count * self.meta. index_bytes);
+		
+		if (use_normals) {
+			self.normal_pointer = new(self.meta.normal_count * self.meta.normal_bytes);
+		}
 		
 		mcpy self.vertex_pointer, data, self.meta.vertex_count * self.meta.vertex_bytes;
 		data = data + self.meta.vertex_count * self.meta.vertex_bytes;
@@ -46,6 +56,12 @@ class Ivx {
 		data = data + self.meta.coords_count * self.meta.coords_bytes;
 		
 		mcpy self.index_pointer, data, self.meta.index_count * self.meta.index_bytes;
+		
+		if (use_normals) {
+			data = data + self.meta.index_count * self.meta.index_bytes;
+			mcpy self.normal_pointer, data, self.meta.normal_count * self.meta.normal_bytes;
+		}
+		
 		return self;
 	}
 }

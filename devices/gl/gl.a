@@ -19,12 +19,22 @@ class Gl {
 	
 	func function(var parameters) return ?Device.send_pointer("gl", parameters);
 	
+	func depth(var enabled) {
+		var parameters = new(Parameters);
+		parameters.command = 0x68;
+		parameters.slot = enabled;
+		
+		var result = self.function(parameters);
+		mfree parameters, Parameters;
+		return result;
+	}
+	
 	func bind_texture(var slot, Texture->var texture) {
 		var parameters = new(Parameters);
 		parameters.command = 0x74;
 		
 		parametres.slot = slot;
-		parameters.texture = texture.texture;
+		parameters.texture = texture.id;
 		
 		var result = self.function(parameters);
 		mfree parameters, Parameters;

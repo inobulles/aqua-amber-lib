@@ -1,0 +1,37 @@
+// cubemaps
+
+import lib/device.a
+
+class Gl_cubemap {
+	var id;
+	
+	var bitmap_list;
+	var bpp_list;
+	var width_list;
+	var height_list;
+	
+	func construct {
+		self.bitmap_list = new(6 * 8);
+		self.bpp_list    = new(6 * 8);
+		self.width_list  = new(6 * 8);
+		self.height_list = new(6 * 8);
+		
+		return self;
+	}
+	
+	func build {
+		self.id = ?Device.send("cubemap", 0x63, self.bitmap_list, self.bpp_list, self.width_list, self.height_list);
+	}
+	
+	func set(var face, var bitmap, var bpp, var width, var height) {
+		?(self.bitmap_list + 8 * face) = bitmap;
+		?(self.bpp_list    + 8 * face) = bpp;
+		?(self.width_list  + 8 * face) = width;
+		?(self.height_list + 8 * face) = height;
+	}
+	
+	func destruct {
+		Device.send("texture", 0x72, self.id);
+	}
+}
+
