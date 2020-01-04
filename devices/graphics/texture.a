@@ -9,12 +9,12 @@ class Texture {
 	
 	var id;
 	
-	func construct(var bitmap, var bpp, var width, var height) {
-		self.id = ?Device.send("texture", 0x63, bitmap, bpp, width, height);
+	func construct(var bitmap, var type, var bpp, var width, var height) {
+		self.id = ?Device.send("texture", 0x63, bitmap, type, bpp, width, height);
 		return self;
 	}
 	
 	func destruct {
-		Device.send("texture", 0x72, self.id);
+		Device.send "texture", 0x72, self.id;
 	}
 }

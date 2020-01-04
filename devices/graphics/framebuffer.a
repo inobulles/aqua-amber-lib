@@ -1,0 +1,38 @@
+// framebuffers
+
+import lib/device.a
+import lib/devices/graphics/texture.a
+
+class Framebuffer {
+	var id;
+	Device->var device;
+	
+	func construct(Texture->var colour_texture, Texture->var depth_texture) {
+		var colour_texture_id = 0;
+		var  depth_texture_id = 0;
+		
+		if (colour_texture) colour_texture_id = colour_texture.id;
+		if  (depth_texture)  depth_texture_id =  depth_texture.id;
+		
+		self.device = new(Device).construct("framebuffer");
+		self.id = ?self.device.send(0x63, colour_texture_id, depth_texture_id);
+		
+		return self;
+	}
+	
+	func bind_bounds(var x, var y, var width, var height) {
+		self.device.send 0x62, self.id, x, y, width, height;
+	}
+	
+	func bind {
+		self.bind_bounds 0, 0, video_width(), video_height();
+	}
+	
+	func destruct {
+		self.device.send 0x72, self.id;
+	}
+	
+	func unbind { // hybrid
+		Device.send "framebuffer", 0x62, 0, 0, 0, video_width(), video_height();
+	}
+}

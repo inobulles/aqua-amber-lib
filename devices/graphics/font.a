@@ -1,26 +1,45 @@
-// create textures from fonts
+// create images from fonts (TrueType)
 
+import lib/device.a
 import lib/devices/graphics/texture.a
+import lib/math.a
 
 class Font {
-	var id;
+	var internal_font_pointer;
+	Device->var device;
+	
+	var width;
+	var height;
 	
 	var data;
 	var bytes;
 	
-	func create_texture(var text) {
-		var texture = new(Texture);
-		texture.id = ?Device.send("font", 0x74, self.id, text);
+	func construct(var path) {
+		if (Fs.read(path, &self.data, &self.bytes)) {
+			print "WARNING Failed to load TTF file (probably wrong path, " ++ path ++ ")\n";
+			return 0;
+		}
+		
+		self.device = new(Device).construct("font");
+		self.internal_font_pointer = ?self.device.send(0x63, self.data, self.bytes);
+		
+		return self;
+	}
+	
+	func create_texture(var string, var size) {
+		var result = self.device.send(0x74, self.internal_font_pointer, string, size);
+		
+		var bitmap  = ?(result + 00);
+		self.width  = ?(result + 08);
+		self.height = ?(result + 16);
+		
+		Texture->var texture = new(Texture).construct(bitmap, 0, 32, self.width, self.height);
+		mfree bitmap, self.width * self.height * 4;
 		return texture;
 	}
 	
-	func get_width (var text) return ?Device.send("font", 0x77, self.id, text);
-	func get_height(var text) return ?Device.send("font", 0x68, self.id, text);
-	
-	func size(var size) Device.send("font", 0x73, self.id, size);
-	
 	func destruct {
+		self.device.send 0x72, self.internal_font_pointer;
 		mfree self.data, self.bytes;
-		Device.send "font", 0x72, self.id;
 	}
 }
