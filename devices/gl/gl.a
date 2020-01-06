@@ -1,43 +1,16 @@
-// gl utility functions
+// gl functions
 
 import lib/device.a
 import lib/devices/graphics/texture.a
 
 class Gl {
-	class Parameters {
-		var command;
-		var left; var right; var bottom; var top; var near; var far;
-		var x; var y; var z; var w;
-		var vertices; var vertex_count;
-		var red; var green; var blue; var alpha;
-		var faces; var face_count;
-		var colours; var colour_count;
-		var texture_coords; var texture_coord_count;
-		var slot; var texture;
-		var sub_command;
-	}
-	
-	func function(var parameters) return ?Device.send_pointer("gl", parameters);
-	
-	func depth(var enabled) {
-		var parameters = new(Parameters);
-		parameters.command = 0x68;
-		parameters.slot = enabled;
-		
-		var result = self.function(parameters);
-		mfree parameters, Parameters;
-		return result;
-	}
-	
 	func bind_texture(var slot, Texture->var texture) {
-		var parameters = new(Parameters);
-		parameters.command = 0x74;
-		
-		parametres.slot = slot;
-		parameters.texture = texture.id;
-		
-		var result = self.function(parameters);
-		mfree parameters, Parameters;
-		return result;
+		Device.send "gl", 0x74, slot, texture.id;
+	}
+	
+	func draw(var index_count, var index_pointer, var vertex_pointer, var texture_coords_pointer, var colour_pointer, var normal_pointer) {
+		Device->var device = new(Device).construct("gl");
+		device.send 0x64, index_count, index_pointer, vertex_pointer, texture_coords_pointer, colour_pointer, normal_pointer;
+		mfree device, Device;
 	}
 }

@@ -4,17 +4,44 @@ import lib/device.a
 
 var PRECISION = 1000000;
 var PRECISION_ROOT = 1000;
-var FLOAT_TAU = 6283185;
+
+var MATH_TAU = 6283185;
+var MATH_E = 2718282;
 
 class Math {
-	func sqrt(var x) return ?Device.send("math", 0x74727173, x) + PRECISION_ROOT; // static
+	// core functions
+	
 	func sin(var x) return ?Device.send("math", 0x6E6973, x); // static
-	func cos(var x) return ?Device.send("math", 0x6E6973, x + FLOAT_TAU / 4); // static
-	func deg(var x) return x * 360 * PRECISION / FLOAT_TAU; // static
+	func tan(var x) return ?Device.send("math", 0x6E6174, x); // static
+	
+	func asin(var x) return ?Device.send("math", 0x6E697361, x); // static
+	func atan(var x) return ?Device.send("math", 0x6E617461, x); // static
 	func atan2(var x, var y) return ?Device.send("math", 0x326E617461, x, y); // static
 	
-	func pixels_x(var x) return x * PRECISION / video_width ();
-	func pixels_y(var y) return y * PRECISION / video_height();
+	func sinh(var x) return ?Device.send("math", 0x686E6973, x); // static
+	func cosh(var x) return ?Device.send("math", 0x68736973, x); // static
+	func tanh(var x) return ?Device.send("math", 0x686E6174, x); // static
+	
+	func root(var index, var x) return ?Device.send("math", 0x746F6F72, index, x); // static
+	func exp(var x) return ?Device.send("math", 0x707865, x); // static
+	func log(var base, var x) return ?Device.send("math", 0x676F6C, base, x); // static
+	
+	func sigmoid(var x) return ?Device.send("math", 0x64696F6D676973, x); // static
+	
+	// derivative functions
+	
+	func cos(var x) return ?Device.send("math", 0x6E6973, x + MATH_TAU / 4); // static
+	
+	func sqrt(var x) return root(2 * PRECISION, x); // static
+	func cbrt(var x) return root(3 * PRECISION, x); // static
+	
+	func log10(var x) return log(10 * PRECISION, x); // static
+	func ln(var x) return log(MATH_E, x); // static
+	
+	func deg(var x) return x * 360 * PRECISION / MATH_TAU; // static
+	
+	func pixels_x(var x) return x * PRECISION / video_width (); // static
+	func pixels_y(var y) return y * PRECISION / video_height(); // static
 	
 	func string_to_int(var string) { // static
 		var value = 0;

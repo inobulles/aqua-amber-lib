@@ -45,9 +45,8 @@ class Ivx {
 		self.coords_pointer = new(self.meta.coords_count * self.meta.coords_bytes);
 		self. index_pointer = new(self.meta. index_count * self.meta. index_bytes);
 		
-		if (use_normals) {
-			self.normal_pointer = new(self.meta.normal_count * self.meta.normal_bytes);
-		}
+		if (use_normals) self.normal_pointer = new(self.meta.normal_count * self.meta.normal_bytes);
+		else self.normal_pointer = 0;
 		
 		mcpy self.vertex_pointer, data, self.meta.vertex_count * self.meta.vertex_bytes;
 		data = data + self.meta.vertex_count * self.meta.vertex_bytes;

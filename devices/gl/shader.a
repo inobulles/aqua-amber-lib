@@ -1,40 +1,53 @@
 // gl shaders
 
-import lib/devices/gl/gl.a
-var gl_shader_zero = 0;
+import lib/devices/math/matrix.a
 
-class Gl_shader {
+var default_shader_program = 0;
+
+class Shader {
 	Device->var device;
-	var program_pointer;
+	var program;
 	
 	var vert_shader_code;
 	var frag_shader_code;
-	var geom_shader_code;
 	
-	func construct(var vert_shader_code, var frag_shader_code, var geom_shader_code) {
+	func construct(var vert_shader_code, var frag_shader_code) {
 		self.vert_shader_code = vert_shader_code;
 		self.frag_shader_code = frag_shader_code;
-		self.geom_shader_code = geom_shader_code;
 		
 		self.device = new(Device).construct("shader");
-		self.device.send 0x63, &self.program_pointer, self.vert_shader_code, self.frag_shader_code, self.geom_shader_code;
+		self.device.send 0x63, &self.program, self.vert_shader_code, self.frag_shader_code;
 		
 		return self;
 	}
 	
-	func uniform_location(var string) return ?self.device.send(0x67, &self.program_pointer, string);
-	
-	func set_uniform(var location, var data, var type) { // hybrid
-		if (self) self.device.send 0x73, location, data, type;
-		else Device.send "shader", 0x73, location, data, type;
+	func destruct {
+		self.device.send 0x72, &self.program;
 	}
 	
 	func default { // static
-		Device.send "shader", 0x75, &gl_shader_zero;
+		Device.send "shader", 0x75, &default_shader_program;
 	}
 	
 	func use { // hybrid
-		if (self) self.device.send 0x75, &self.program_pointer;
+		if (self) self.device.send 0x75, &self.program;
 		else default();
+	}
+	
+	func find(var uniform_name) {
+		return ?self.device.send(0x66, &self.program, uniform_name);
+	}
+	
+	func uniform(var uniform_location, var uniform_type, var data) {
+		var type = uniform_type & 0x0F;
+		var size = uniform_type & 0xF0;
+		
+		/// TODO vectors
+		
+		if (size == 0x40) { // data is matrix
+			data = (Matrix->data).matrix;
+		}
+		
+		self.device.send 0x6C, uniform_location, uniform_type, data;
 	}
 }
