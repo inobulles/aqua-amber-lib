@@ -14,7 +14,7 @@ class Joystick {
 	}
 	
 	func name return self.device.send(0x6E, self.id);
-	func axis(var axis) return ?self.device.send(0x61, self.id, axis);
+	func raw_axis(var axis) return ?self.device.send(0x61, self.id, axis);
 	func button(var button) return ?self.device.send(0x62, self.id, button);
 	
 	func rumble(var strength, var seconds, var period, var direction) {
@@ -22,9 +22,13 @@ class Joystick {
 	}
 	
 	func axis_deadzone(var axis, var deadzone) {
-		var value = self.axis(axis);
+		var value = self.raw_axis(axis);
 		if (value < -deadzone or value > deadzone) return value;
 		return 0;
+	}
+	
+	func axis(var axis) {
+		return self.axis_deadzone(axis, 100000);
 	}
 	
 	// static functions

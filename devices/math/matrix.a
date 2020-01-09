@@ -24,6 +24,11 @@ class Matrix {
 	func translate(var x, var y, var z) self.device.send 0x74, self.matrix, self.matrix, x, y, z;
 	func rotate(var angle, var x, var y, var z) self.device.send 0x72, self.matrix, self.matrix, angle, x, y, z;
 	
+	func rotate_2d(var x, var y) {
+		self.rotate(x, 0, PRECISION, 0);
+		self.rotate(-y, Math.cos(x), 0, Math.sin(x));
+	}
+	
 	func __camera(var command, var left, var right, var bottom, var top, var near, var far) {
 		var arguments = new(8 * 8);
 		
