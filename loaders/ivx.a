@@ -1,4 +1,4 @@
-// load Inobulles Vertex files
+// load Inobulles VerteX files
 
 import lib/devices/io/fs.a
 

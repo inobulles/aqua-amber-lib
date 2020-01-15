@@ -1,0 +1,59 @@
+// load Inobulles PiXel files
+
+import lib/devices/io/fs.a
+import lib/devices/graphics/texture.a
+
+var IPX_SIGNATURE = 0x495058;
+
+class Ipx {
+	class Ipx_meta {
+		var signature;
+		
+		var version_major;
+		var version_minor;
+		
+		var width;
+		var height;
+		var bpp;
+	}
+	
+	var data;
+	var bytes;
+	
+	var bitmap;
+	var width;
+	var height;
+	var bpp;
+	
+	func construct(var path) {
+		if (Fs.read(path, &self.data, &self.bytes)) {
+			print "WARNING Failed to load IPX file (probably wrong path, " ++ path ++ ")\n";
+			return 0;
+		}
+		
+		var meta = Ipx_meta->self.data;
+		if (meta.signature != IPX_SIGNATURE) {
+			print "WARNING File is not IPX\n";
+			mfree self.data, self.bytes;
+			return 0;
+		}
+		
+		self.width  = meta.width;
+		self.height = meta.height;
+		self.bpp    = meta.bpp;
+		self.bitmap = self.data + Ipx_meta;
+		
+		return self;
+	}
+	
+	func destruct {
+		mfree self.data, self.bytes;
+	}
+	
+	func create_texture(var path) { // static
+		Ipx->var object = new(Ipx).construct(path);
+		var texture = new(Texture).construct(object.bitmap, 0, object.bpp, object.width, object.height);
+		object.destruct();
+		return texture;
+	}
+}
