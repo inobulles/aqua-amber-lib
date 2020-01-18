@@ -1,7 +1,7 @@
 // provide basic video commands
 
 class Video {
-	func clear(var r, var g, var b, var a) video_clear r, g, b, a;
+	func clear(fixed var r, fixed var g, fixed var b, fixed var a) video_clear r, g, b, a;
 	func flip video_flip();
 	func fps return video_fps();
 }

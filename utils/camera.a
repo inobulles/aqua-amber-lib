@@ -19,17 +19,17 @@ class Camera {
 	
 	var orbit;
 	
-	var _fov; var fov; // field of view
+	fixed var _fov; fixed var fov; // field of view
 	
-	var _rx; var rx; // rotation around yaw axis
-	var _ry; var ry; // rotation around pitch axis
-	var _rz; var rz; // rotation around roll axis
+	fixed var _rx; fixed var rx; // rotation around yaw axis
+	fixed var _ry; fixed var ry; // rotation around pitch axis
+	fixed var _rz; fixed var rz; // rotation around roll axis
 	
-	var _px; var px; // left / right position
-	var _py; var py; // up / down position
-	var _pz; var pz; // forwards / backwards position
+	fixed var _px; fixed var px; // left / right position
+	fixed var _py; fixed var py; // up / down position
+	fixed var _pz; fixed var pz; // forwards / backwards position
 	
-	var _distance; var distance;
+	fixed var _distance; fixed var distance;
 	
 	func construct(var orbit, Matrix->var model_view_projection_matrix, Joystick->var joystick) {
 		// input methods
@@ -50,7 +50,7 @@ class Camera {
 		self.fov = MATH_TAU / 4;
 		
 		if (self.orbit) {
-			self.distance = 3000000; // default orbit distance
+			self.distance = 3.0; // default orbit distance
 		}
 		
 		return self;
@@ -74,7 +74,7 @@ class Camera {
 		if (self.ry < -MATH_TAU / 4) self.ry = -MATH_TAU / 4;
 		
 		// getting strafe inputs
-		var strafex = 0; var strafey = 0;
+		var strafex = 0.0; var strafey = 0.0;
 		
 		if (self.joystick) {
 			strafex = strafex + self.joystick.axis(0);
@@ -82,10 +82,10 @@ class Camera {
 		}
 		
 		if (strafex or strafey) {
-			var player_speed = 1 * PRECISION;
+			var player_speed = 1.0;
 			
 			var strafe = Math.atan2(strafey, strafex);
-			var speed = Math.max(Math.min(Math.sqrt(strafex * strafex + strafey * strafey) * (player_speed / PRECISION), player_speed), -player_speed);
+			var speed = fixed Math.max(Math.min(Math.sqrt(strafex * strafex + strafey * strafey) * player_speed, player_speed), -player_speed);
 			
 			self.px = self.px + Math.mul_float(speed, Math.cos(self._rx - strafe)) / fps * 10;
 			self.pz = self.pz + Math.mul_float(speed, Math.sin(self._rx - strafe)) / fps * 10;
@@ -111,7 +111,7 @@ class Camera {
 		// matrices
 		
 		self.projection_matrix.identity();
-		self.projection_matrix.perspective self._fov, video_width() * PRECISION / video_height(), 100000, 500000000;
+		self.projection_matrix.perspective self._fov, fixed video_width() / fixed video_height(), 100000, 500000000;
 		
 		self.model_view_matrix.identity();
 		

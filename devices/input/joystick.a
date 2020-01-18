@@ -14,21 +14,21 @@ class Joystick {
 	}
 	
 	func name return self.device.send(0x6E, self.id);
-	func raw_axis(var axis) return ?self.device.send(0x61, self.id, axis);
+	fixed func raw_axis(var axis) return ?self.device.send(0x61, self.id, axis);
 	func button(var button) return ?self.device.send(0x62, self.id, button);
 	
-	func rumble(var strength, var seconds, var period, var direction) {
+	func rumble(fixed var strength, fixed var seconds, fixed var period, fixed var direction) {
 		return ?self.device.send(0x68, self.id, strength, seconds, period, direction);
 	}
 	
-	func axis_deadzone(var axis, var deadzone) {
+	fixed func axis_deadzone(var axis, fixed var deadzone) {
 		var value = self.raw_axis(axis);
 		if (value < -deadzone or value > deadzone) return value;
 		return 0;
 	}
 	
-	func axis(var axis) {
-		return self.axis_deadzone(axis, 100000);
+	fixed func axis(var axis) {
+		return self.axis_deadzone(axis, 0.1);
 	}
 	
 	// static functions

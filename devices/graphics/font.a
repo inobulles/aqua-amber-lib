@@ -26,7 +26,7 @@ class Font {
 		return self;
 	}
 	
-	func create_texture(var string, var size) {
+	func create_texture(var string, fixed var size) {
 		var result = self.device.send(0x74, self.internal_font_pointer, string, size);
 		
 		var bitmap  = ?(result + 00);

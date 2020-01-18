@@ -16,9 +16,9 @@ class Surface {
 		self.device.send 0x72, self.surface;
 	}
 	
-	func draw   (var x, var y, var layer)        self.device.send 0x64, self.surface, x, y, layer;
-	func size   (var x, var y)                   self.device.send 0x7A, self.surface, x, y;
-	func scroll (var x1, var y1, var x2, var y2) self.device.send 0x73, self.surface, x1, y1, x2, y2;
-	func colour (var r, var g, var b, var a)     self.device.send 0x75, self.surface, r, g, b, a;
-	func texture(Texture->var texture)           self.device.send 0x74, self.surface, texture.id;
+	func draw   (fixed var x, fixed var y, fixed var layer)              self.device.send 0x64, self.surface, x, y, layer;
+	func size   (fixed var x, fixed var y)                               self.device.send 0x7A, self.surface, x, y;
+	func scroll (fixed var x1, fixed var y1, fixed var x2, fixed var y2) self.device.send 0x73, self.surface, x1, y1, x2, y2;
+	func colour (fixed var r, fixed var g, fixed var b, fixed var a)     self.device.send 0x75, self.surface, r, g, b, a;
+	func texture(Texture->var texture)                                   self.device.send 0x74, self.surface, texture.id;
 }

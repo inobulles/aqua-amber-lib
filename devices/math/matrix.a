@@ -20,16 +20,16 @@ class Matrix {
 	func set(Matrix->var matrix) mcpy self.matrix, matrix.matrix, self.matrix_bytes;
 	func multiply(Matrix->var matrix) self.device.send 0x6D, self.matrix, self.matrix, matrix.matrix;
 	
-	func scale(var x, var y, var z) self.device.send 0x73, self.matrix, self.matrix, x, y, z;
-	func translate(var x, var y, var z) self.device.send 0x74, self.matrix, self.matrix, x, y, z;
-	func rotate(var angle, var x, var y, var z) self.device.send 0x72, self.matrix, self.matrix, angle, x, y, z;
+	func scale(fixed var x, fixed var y, fixed var z) self.device.send 0x73, self.matrix, self.matrix, x, y, z;
+	func translate(fixed var x, fixed var y, fixed var z) self.device.send 0x74, self.matrix, self.matrix, x, y, z;
+	func rotate(fixed var angle, fixed var x, fixed var y, fixed var z) self.device.send 0x72, self.matrix, self.matrix, angle, x, y, z;
 	
-	func rotate_2d(var x, var y) {
-		self.rotate(x, 0, PRECISION, 0);
+	func rotate_2d(fixed var x, fixed var y) {
+		self.rotate(x, 0, 1.0, 0);
 		self.rotate(-y, Math.cos(x), 0, Math.sin(x));
 	}
 	
-	func __camera(var command, var left, var right, var bottom, var top, var near, var far) {
+	func __camera(var command, fixed var left, fixed var right, fixed var bottom, fixed var top, fixed var near, fixed var far) {
 		var arguments = new(8 * 8);
 		
 		?(arguments + 0x00) = command;
@@ -51,12 +51,12 @@ class Matrix {
 	//     The left, right, bottom, and top parameters tell the dimensions of the camera plane at Z = 1, not at Z = near.
 	//     They are multiplied by near by the matrix device to conserve precision.
 	
-	func frustum(var left, var right, var bottom, var top, var near, var far) self.__camera 0x66, left, right, bottom, top, near, far;
-	func ortho(var left, var right, var bottom, var top, var near, var far) self.__camera 0x6F, left, right, bottom, top, near, far;
+	func frustum(fixed var left, fixed var right, fixed var bottom, fixed var top, fixed var near, fixed var far) self.__camera 0x66, left, right, bottom, top, near, far;
+	func ortho(fixed var left, fixed var right, fixed var bottom, fixed var top, fixed var near, fixed var far) self.__camera 0x6F, left, right, bottom, top, near, far;
 	
-	func perspective(var fovy, var aspect, var near, var far) {
+	func perspective(fixed var fovy, fixed var aspect, fixed var near, fixed var far) {
 		var frustum_y = Math.tan(fovy / 2);
-		var frustum_x = Math.mul_float(frustum_y, aspect);
+		var frustum_x = frustum_y * aspect;
 		
 		self.frustum(-frustum_x, frustum_x, -frustum_y, frustum_y, near, far);
 	}
