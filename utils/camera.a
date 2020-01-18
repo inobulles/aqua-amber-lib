@@ -87,8 +87,8 @@ class Camera {
 			var strafe = Math.atan2(strafey, strafex);
 			var speed = fixed Math.max(Math.min(Math.sqrt(strafex * strafex + strafey * strafey) * player_speed, player_speed), -player_speed);
 			
-			self.px = self.px + Math.mul_float(speed, Math.cos(self._rx - strafe)) / fps * 10;
-			self.pz = self.pz + Math.mul_float(speed, Math.sin(self._rx - strafe)) / fps * 10;
+			self.px = self.px + speed * Math.cos(self._rx - strafe) / fps * 10;
+			self.pz = self.pz + speed * Math.sin(self._rx - strafe) / fps * 10;
 			
 		}
 		
@@ -111,7 +111,7 @@ class Camera {
 		// matrices
 		
 		self.projection_matrix.identity();
-		self.projection_matrix.perspective self._fov, fixed video_width() / fixed video_height(), 100000, 500000000;
+		self.projection_matrix.perspective self._fov, (fixed video_width()) / fixed video_height(), 100000, 500000000;
 		
 		self.model_view_matrix.identity();
 		
