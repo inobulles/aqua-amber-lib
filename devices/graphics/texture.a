@@ -3,6 +3,15 @@
 import lib/device.a
 
 class Texture {
+	var FILTER_MAG_NONE     = 0x01;
+	var FILTER_MAG_BILINEAR = 0x02;
+	
+	var FILTER_MIN_NONE             = 0x10;
+	var FILTER_MIN_MIPMAPS          = 0x20;
+	var FILTER_MIN_BILINEAR         = 0x30;
+	var FILTER_MIN_BILINEAR_MIPMAPS = 0x40;
+	var FILTER_MIN_TRILINEAR        = 0x50;
+	
 	func filter(var mode) { // static
 		return ?Device.send("texture", 0x66, mode);
 	}

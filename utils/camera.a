@@ -47,7 +47,7 @@ class Camera {
 		// parameters
 		
 		self.orbit = orbit;
-		self.fov = MATH_TAU / 4;
+		self.fov = Math.TAU / 4;
 		
 		if (self.orbit) {
 			self.distance = 3.0; // default orbit distance
@@ -70,8 +70,8 @@ class Camera {
 			//~ }
 		}
 		
-		if (self.ry >  MATH_TAU / 4) self.ry =  MATH_TAU / 4;
-		if (self.ry < -MATH_TAU / 4) self.ry = -MATH_TAU / 4;
+		if (self.ry >  Math.TAU / 4) self.ry =  Math.TAU / 4;
+		if (self.ry < -Math.TAU / 4) self.ry = -Math.TAU / 4;
 		
 		// getting strafe inputs
 		var strafex = 0.0; var strafey = 0.0;

@@ -2,13 +2,15 @@
 
 import lib/device.a
 
-whole var PRECISION = 1000000;
-whole var PRECISION_ROOT = 1000;
-
-var MATH_TAU = 6.283185;
-var MATH_E = 2.718282;
-
 class Math {
+	// constants
+	
+	whole var PRECISION = 1000000;
+	whole var PRECISION_ROOT = 1000;
+	
+	var TAU = 6.283185;
+	var E = 2.718282;
+	
 	// core functions
 	
 	fixed func sin(fixed var x) return ?Device.send("math", 0x6E6973, x); // static
@@ -30,18 +32,18 @@ class Math {
 	
 	// derivative functions
 	
-	fixed func cos(fixed var x) return ?Device.send("math", 0x6E6973, x + MATH_TAU / 4); // static
+	fixed func cos(fixed var x) return ?Device.send("math", 0x6E6973, x + Math.TAU / 4); // static
 	
 	fixed func sqrt(fixed var x) return root(2.0, x); // static
 	fixed func cbrt(fixed var x) return root(3.0, x); // static
 	
 	fixed func log10(fixed var x) return log(10.0, x); // static
-	fixed func ln(fixed var x) return log(MATH_E, x); // static
+	fixed func ln(fixed var x) return log(Math.E, x); // static
 	
-	fixed func deg(fixed var x) return x * 360 / MATH_TAU; // static
+	fixed func deg(fixed var x) return x * 360 / Math.TAU; // static
 	
-	fixed func pixels_x(whole var x) return x * PRECISION / video_width (); // static
-	fixed func pixels_y(whole var y) return y * PRECISION / video_height(); // static
+	fixed func pixels_x(whole var x) return x * Math.PRECISION / video_width (); // static
+	fixed func pixels_y(whole var y) return y * Math.PRECISION / video_height(); // static
 	
 	func string_to_int(var string) { // static
 		var value = 0;

@@ -34,20 +34,29 @@ class Shader {
 		else default();
 	}
 	
-	func find(var uniform_name) {
-		return ?self.device.send(0x66, &self.program, uniform_name);
+	func find(var inform_name) {
+		return ?self.device.send(0x66, &self.program, inform_name);
 	}
 	
-	func uniform(var uniform_location, var uniform_type, var data) {
-		var type = uniform_type & 0x0F;
-		var size = uniform_type & 0xF0;
+	var INFORM_TYPE_FIXED = 0x00;
+	var INFORM_TYPE_WHOLE = 0x01;
+	
+	var INFORM_SIZE_VALUE    = 0x00;
+	var INFORM_SIZE_VECTOR_2 = 0x10;
+	var INFORM_SIZE_VECTOR_3 = 0x20;
+	var INFORM_SIZE_VECTOR_4 = 0x30;
+	var INFORM_SIZE_MATRIX   = 0x40;
+	
+	func inform(var inform_location, var inform_type, var data) {
+		var type = inform_type & 0x0F;
+		var size = inform_type & 0xF0;
 		
 		/// TODO vectors
 		
-		if (size == 0x40) { // data is matrix
+		if (size == Shader.INFORM_SIZE_MATRIX) { // data is matrix
 			data = (Matrix->data).matrix;
 		}
 		
-		self.device.send 0x6C, uniform_location, uniform_type, data;
+		self.device.send 0x6C, inform_location, inform_type, data;
 	}
 }
