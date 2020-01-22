@@ -1,66 +1,128 @@
-// load Inobulles VerteX files
+// load Inobulles VerteX 2.0 files
 
 import lib/devices/io/fs.a
 
 class Ivx {
+	var MAX_ATTRIBUTE_COUNT = 8;
+	
 	class Ivx_meta {
+		class Ivx_attribute_meta {
+			var components;
+			var offset;
+		}
+		
 		var version_major;
 		var version_minor;
-		var is_index_size_short;
 		byte[1024] name;
 		
-		var vertex_count;
-		var coords_count;
-		var  index_count;
+		var index_count;
+		var index_offset;
 		
-		var vertex_bytes;
-		var coords_bytes;
-		var  index_bytes;
-		
-		var normal_count; // only for v1.1
-		var normal_bytes;
+		var[16 /* Ivx_attribute_meta * Ivx.MAX_ATTRIBUTE_COUNT */] attributes;
 	}
 	
+	var data; var bytes;
 	Ivx_meta->var meta;
 	
-	var vertex_pointer;
-	var coords_pointer;
-	var  index_pointer;
-	var normal_pointer;
+	var index_pointer;
+	var index_count;
+	
+	var[8 /* Ivx.MAX_ATTRIBUTE_COUNT */] attribute_components;
+	var[8 /* Ivx.MAX_ATTRIBUTE_COUNT */] attribute_pointers;
 	
 	func construct(var path) {
-		var data; var bytes;
-		if (Fs.read(path, &data, &bytes)) {
+		if (Fs.read(path, &self.data, &self.bytes)) {
 			print "WARNING Failed to load IVX file (probably wrong path, " ++ path ++ ")\n";
 			return 0;
 		}
 		
-		self.meta = new(Ivx_meta);
-		mcpy self.meta, data, Ivx_meta;
+		self.meta = self.data;
+		self.index_pointer = self.data + self.meta.index_offset;
+		self.index_count = self.meta.index_count;
 		
-		var use_normals = (self.meta.version_major * 100 + self.meta.version_minor) >= 101;
-		data = data + Ivx_meta - not use_normals * 2 * 8; // lop off the last 16 bytes (Ivx_meta.normal_count and Ivx_meta.normal_bytes) if not using normals
+		// parse attributes
 		
-		self.vertex_pointer = new(self.meta.vertex_count * self.meta.vertex_bytes);
-		self.coords_pointer = new(self.meta.coords_count * self.meta.coords_bytes);
-		self. index_pointer = new(self.meta. index_count * self.meta. index_bytes);
+		self.attribute_components = new(8 * Ivx.MAX_ATTRIBUTE_COUNT);
+		self.attribute_pointers = new(8 * Ivx.MAX_ATTRIBUTE_COUNT);
 		
-		if (use_normals) self.normal_pointer = new(self.meta.normal_count * self.meta.normal_bytes);
-		else self.normal_pointer = 0;
-		
-		mcpy self.vertex_pointer, data, self.meta.vertex_count * self.meta.vertex_bytes;
-		data = data + self.meta.vertex_count * self.meta.vertex_bytes;
-		
-		mcpy self.coords_pointer, data, self.meta.coords_count * self.meta.coords_bytes;
-		data = data + self.meta.coords_count * self.meta.coords_bytes;
-		
-		mcpy self.index_pointer, data, self.meta.index_count * self.meta.index_bytes;
-		
-		if (use_normals) {
-			data = data + self.meta.index_count * self.meta.index_bytes;
-			mcpy self.normal_pointer, data, self.meta.normal_count * self.meta.normal_bytes;
+		var i = -1;
+		while ((i = i + 1) <= Ivx.MAX_ATTRIBUTE_COUNT) {
+			Ivx_meta.Ivx_attribute_meta->var attribute_meta = &self.meta.attributes + Ivx_meta.Ivx_attribute_meta * i;
+			if (not attribute_meta.components) break;
+			
+			?(self.attribute_components + 8 * i) = attribute_meta.components;
+			?(self.attribute_pointers + 8 * i) = self.data + attribute_meta.offset;
 		}
 		
 		return self;
 	}
+	
+	func destruct {
+		mfree self.data, self.bytes;
+	}
 }
+
+// the following code is for loading IVX 1.X files
+
+//~ class Ivx {
+	//~ class Ivx_meta {
+		//~ var version_major;
+		//~ var version_minor;
+		//~ var is_index_size_short;
+		//~ byte[1024] name;
+		
+		//~ var vertex_count;
+		//~ var coords_count;
+		//~ var  index_count;
+		
+		//~ var vertex_bytes;
+		//~ var coords_bytes;
+		//~ var  index_bytes;
+		
+		//~ var normal_count; // only for v1.1
+		//~ var normal_bytes;
+	//~ }
+	
+	//~ Ivx_meta->var meta;
+	
+	//~ var vertex_pointer;
+	//~ var coords_pointer;
+	//~ var  index_pointer;
+	//~ var normal_pointer;
+	
+	//~ func construct(var path) {
+		//~ var data; var bytes;
+		//~ if (Fs.read(path, &data, &bytes)) {
+			//~ print "WARNING Failed to load IVX file (probably wrong path, " ++ path ++ ")\n";
+			//~ return 0;
+		//~ }
+		
+		//~ self.meta = new(Ivx_meta);
+		//~ mcpy self.meta, data, Ivx_meta;
+		
+		//~ var use_normals = (self.meta.version_major * 100 + self.meta.version_minor) >= 101;
+		//~ data = data + Ivx_meta - not use_normals * 2 * 8; // lop off the last 16 bytes (Ivx_meta.normal_count and Ivx_meta.normal_bytes) if not using normals
+		
+		//~ self.vertex_pointer = new(self.meta.vertex_count * self.meta.vertex_bytes);
+		//~ self.coords_pointer = new(self.meta.coords_count * self.meta.coords_bytes);
+		//~ self. index_pointer = new(self.meta. index_count * self.meta. index_bytes);
+		
+		//~ if (use_normals) self.normal_pointer = new(self.meta.normal_count * self.meta.normal_bytes);
+		//~ else self.normal_pointer = 0;
+		
+		//~ mcpy self.vertex_pointer, data, self.meta.vertex_count * self.meta.vertex_bytes;
+		//~ data = data + self.meta.vertex_count * self.meta.vertex_bytes;
+		
+		//~ mcpy self.coords_pointer, data, self.meta.coords_count * self.meta.coords_bytes;
+		//~ data = data + self.meta.coords_count * self.meta.coords_bytes;
+		
+		//~ mcpy self.index_pointer, data, self.meta.index_count * self.meta.index_bytes;
+		
+		//~ if (use_normals) {
+			//~ data = data + self.meta.index_count * self.meta.index_bytes;
+			//~ mcpy self.normal_pointer, data, self.meta.normal_count * self.meta.normal_bytes;
+		//~ }
+		
+		//~ return self;
+	//~ }
+//~ }
