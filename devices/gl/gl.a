@@ -8,9 +8,11 @@ class Gl {
 		Device.send "gl", 0x74, slot, texture.id;
 	}
 	
-	func draw(var index_count, var index_pointer, var vertex_pointer, var texture_coords_pointer, var colour_pointer, var normal_pointer) {
-		Device->var device = new(Device).construct("gl");
-		device.send 0x64, index_count, index_pointer, vertex_pointer, texture_coords_pointer, colour_pointer, normal_pointer;
-		mfree device, Device;
+	func attribute(var slot, var components, var pointer) {
+		Device.send "gl", 0x61, slot, components, pointer;
+	}
+	
+	func draw(var index_count, var index_pointer) {
+		Device.send "gl", 0x64, index_count, index_pointer;
 	}
 }
