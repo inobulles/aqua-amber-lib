@@ -39,9 +39,8 @@ class Camera {
 		// matrices
 		
 		self.model_view_matrix = new(Matrix).construct();
-		self.model_view_matrix.identity();
-		
 		self.projection_matrix = new(Matrix).construct();
+		
 		self.model_view_projection_matrix = model_view_projection_matrix;
 		
 		// parameters

@@ -8,17 +8,18 @@ class Matrix {
 	Device->var device;
 	var matrix_bytes;
 	
+	func identity self.device.send 0x69, self.matrix;
+	func set(Matrix->var matrix) mcpy self.matrix, matrix.matrix, self.matrix_bytes;
+	func multiply(Matrix->var matrix) self.device.send 0x6D, self.matrix, self.matrix, matrix.matrix;
+	
 	func construct {
 		self.device = new(Device).construct("matrix");
 		self.matrix_bytes = ?self.device.send(0x62);
 		self.matrix = new(self.matrix_bytes);
+		self.matrix.identity();
 		
 		return self;
 	}
-	
-	func identity self.device.send 0x69, self.matrix;
-	func set(Matrix->var matrix) mcpy self.matrix, matrix.matrix, self.matrix_bytes;
-	func multiply(Matrix->var matrix) self.device.send 0x6D, self.matrix, self.matrix, matrix.matrix;
 	
 	func scale(fixed var x, fixed var y, fixed var z) self.device.send 0x73, self.matrix, self.matrix, x, y, z;
 	func translate(fixed var x, fixed var y, fixed var z) self.device.send 0x74, self.matrix, self.matrix, x, y, z;
