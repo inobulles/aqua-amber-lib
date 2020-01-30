@@ -16,7 +16,7 @@ class Matrix {
 		self.device = new(Device).construct("matrix");
 		self.matrix_bytes = ?self.device.send(0x62);
 		self.matrix = new(self.matrix_bytes);
-		self.matrix.identity();
+		self.identity();
 		
 		return self;
 	}

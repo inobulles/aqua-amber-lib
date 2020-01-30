@@ -34,7 +34,7 @@ class Png {
 	
 	func create_texture(var path) { // static
 		Png->var object = new(Png).construct(path);
-		var texture = new(Texture).construct(object.bitmap, 0, object.bpp, object.width, object.height);
+		var texture = new(Texture).construct(Texture.TYPE_COLOUR, object.bitmap, object.bpp, object.width, object.height);
 		object.destruct();
 		return texture;
 	}

@@ -4,20 +4,24 @@ import lib/devices/input/joystick.a
 import lib/devices/math/matrix.a
 
 class Camera {
+	// camera types
+	
+	var TYPE_ORBIT = 0;
+	var TYPE_FIRST_PERSON = 1;
+	
 	// input methods
 	
 	Joystick->var joystick;
 	
 	// matrices
 	
-	Matrix->var model_view_matrix;
-	Matrix->var projection_matrix;
-	
-	Matrix->var model_view_projection_matrix;
+	Matrix->var mv_matrix; // model x view matrix
+	Matrix->var p_matrix; // projection matrix
+	Matrix->var mvp_matrix; // model x view x projection matrix
 	
 	// parameters (all values starting with an underscore are transition values)
 	
-	var orbit;
+	var type;
 	
 	fixed var _fov; fixed var fov; // field of view
 	
@@ -31,24 +35,23 @@ class Camera {
 	
 	fixed var _distance; fixed var distance;
 	
-	func construct(var orbit, Matrix->var model_view_projection_matrix, Joystick->var joystick) {
+	func construct(var type, Joystick->var joystick) {
 		// input methods
 		
 		self.joystick = joystick;
 		
 		// matrices
 		
-		self.model_view_matrix = new(Matrix).construct();
-		self.projection_matrix = new(Matrix).construct();
-		
-		self.model_view_projection_matrix = model_view_projection_matrix;
+		self. mv_matrix = new(Matrix).construct();
+		self.  p_matrix = new(Matrix).construct();
+		self.mvp_matrix = new(Matrix).construct();
 		
 		// parameters
 		
-		self.orbit = orbit;
+		self.type = type;
 		self.fov = Math.TAU / 4;
 		
-		if (self.orbit) {
+		if (self.type == self.TYPE_ORBIT) {
 			self.distance = 3.0; // default orbit distance
 		}
 		
@@ -59,7 +62,7 @@ class Camera {
 		// getting rotation inputs
 		
 		if (self.joystick) {
-			//~ if (self.orbit) {
+			//~ if (self.type == self.TYPE_ORBIT) {
 				//~ self.rx = self.rx - self.joystick.axis(2) / fps * 5;
 				//~ self.ry = self.ry + self.joystick.axis(3) / fps * 5;
 				
@@ -103,25 +106,25 @@ class Camera {
 		self._py = self._py + (self.py - self._py) / fps * 10;
 		self._pz = self._pz + (self.pz - self._pz) / fps * 10;
 		
-		if (self.orbit) {
+		if (self.type == self.TYPE_ORBIT) {
 			self._distance = self._distance + (self.distance - self._distance) / fps * 10;
 		}
 		
 		// matrices
 		
-		self.projection_matrix.identity();
-		self.projection_matrix.perspective self._fov, (fixed video_width()) / fixed video_height(), 100000, 500000000;
+		self.p_matrix.identity();
+		self.p_matrix.perspective self._fov, (fixed video_width()) / fixed video_height(), 100000, 500000000;
 		
-		self.model_view_matrix.identity();
+		self.mv_matrix.identity();
 		
-		if (self.orbit) {
-			self.model_view_matrix.translate 0, 0, -self._distance;
+		if (self.type == self.TYPE_ORBIT) {
+			self.mv_matrix.translate 0, 0, -self._distance;
 		}
 		
-		self.model_view_matrix.rotate_2d self._rx, self._ry, self._rz;
-		self.model_view_matrix.translate -self._px, -self._py, -self._pz;
+		self.mv_matrix.rotate_2d self._rx, self._ry, self._rz;
+		self.mv_matrix.translate -self._px, -self._py, -self._pz;
 		
-		self.model_view_projection_matrix.set self.model_view_matrix;
-		self.model_view_projection_matrix.multiply self.projection_matrix;
+		self.mvp_matrix.set self.mv_matrix;
+		self.mvp_matrix.multiply self.p_matrix;
 	}
 }

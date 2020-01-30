@@ -1,0 +1,22 @@
+// basic batching library for managing batches of vertices and models
+
+import lib/devices/graphics/gl.a
+import lib/devices/math/matrix.a
+import lib/loaders/ivx.a
+
+class Batch {
+	Device->var device;
+	
+	func construct {
+		self.device = new(Device).construct("batch");
+		return self;
+	}
+	
+	func clear {
+		self.device.send 
+	}
+	
+	func add_ivx_transformation_matrix(Ivx->var ivx, Matrix->var matrix) {
+		index_pointer
+	}
+}

@@ -7,15 +7,21 @@ class Framebuffer {
 	var id;
 	Device->var device;
 	
-	func construct(Texture->var colour_texture, Texture->var depth_texture) {
-		var colour_texture_id = 0;
-		var  depth_texture_id = 0;
+	Texture->var colour_texture;
+	Texture->var  depth_texture;
+	
+	var width;
+	var height;
+	
+	func construct(var width, var height) {
+		self.width  = width;
+		self.height = height;
 		
-		if (colour_texture) colour_texture_id = colour_texture.id;
-		if  (depth_texture)  depth_texture_id =  depth_texture.id;
+		self.colour_texture = new(Texture).construct(Texture.TYPE_COLOUR, 0, 32, self.width, self.height);
+		self. depth_texture = new(Texture).construct(Texture.TYPE_DEPTH,  0, 32, self.width, self.height);
 		
 		self.device = new(Device).construct("framebuffer");
-		self.id = ?self.device.send(0x63, colour_texture_id, depth_texture_id);
+		self.id = ?self.device.send(0x63, self.colour_texture.id, self.depth_texture.id);
 		
 		return self;
 	}
@@ -25,7 +31,7 @@ class Framebuffer {
 	}
 	
 	func bind {
-		self.bind_bounds 0, 0, video_width(), video_height();
+		self.bind_bounds 0, 0, self.width, self.height;
 	}
 	
 	func destruct {

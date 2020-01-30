@@ -12,14 +12,17 @@ class Texture {
 	var FILTER_MIN_BILINEAR_MIPMAPS = 0x40;
 	var FILTER_MIN_TRILINEAR        = 0x50;
 	
+	var TYPE_COLOUR = 0x00;
+	var TYPE_DEPTH  = 0x01;
+	
 	func filter(var mode) { // static
 		return ?Device.send("texture", 0x66, mode);
 	}
 	
 	var id;
 	
-	func construct(var bitmap, var type, var bpp, var width, var height) {
-		self.id = ?Device.send("texture", 0x63, bitmap, type, bpp, width, height);
+	func construct(var type, var bitmap, var bpp, var width, var height) {
+		self.id = ?Device.send("texture", 0x63, type, bitmap, bpp, width, height);
 		return self;
 	}
 	

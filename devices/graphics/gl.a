@@ -8,11 +8,15 @@ class Gl {
 		Device.send "gl", 0x74, slot, texture.id;
 	}
 	
-	func attribute(var slot, var components, var pointer) {
-		Device.send "gl", 0x61, slot, components, pointer;
+	func attribute(var slot, var dimensions, var pointer) {
+		Device.send "gl", 0x61, slot, dimensions, pointer;
 	}
 	
 	func draw(var index_count, var index_pointer) {
 		Device.send "gl", 0x64, index_count, index_pointer;
+	}
+	
+	func depth(var enabled) {
+		Device.send "gl", 0x68, enabled;
 	}
 }
