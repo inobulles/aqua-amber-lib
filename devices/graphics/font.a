@@ -1,6 +1,6 @@
 // create images from fonts (TrueType)
 
-import lib/device.a
+import lib/devices/io/fs.a
 import lib/devices/graphics/texture.a
 import lib/math.a
 
@@ -33,7 +33,7 @@ class Font {
 		self.width  = ?(result + 08);
 		self.height = ?(result + 16);
 		
-		Texture->var texture = new(Texture).construct(bitmap, 0, 32, self.width, self.height);
+		Texture->var texture = new(Texture).construct(Texture.TYPE_COLOUR, bitmap, 32, self.width, self.height);
 		mfree bitmap, self.width * self.height * 4;
 		return texture;
 	}

@@ -42,8 +42,8 @@ class Math {
 	
 	fixed func deg(fixed var x) return x * 360 / Math.TAU; // static
 	
-	fixed func pixels_x(whole var x) return x * Math.PRECISION / video_width (); // static
-	fixed func pixels_y(whole var y) return y * Math.PRECISION / video_height(); // static
+	fixed func pixels_x(whole var x) return x * 2.0 / video_width (); // static
+	fixed func pixels_y(whole var y) return y * 2.0 / video_height(); // static
 	
 	func string_to_int(var string) { // static
 		var value = 0;

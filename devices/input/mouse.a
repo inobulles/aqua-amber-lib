@@ -6,6 +6,10 @@ class Mouse {
 	var id;
 	Device->var device;
 	
+	var BUTTON_LEFT   = 0;
+	var BUTTON_MIDDLE = 1;
+	var BUTTON_RIGHT  = 2;
+	
 	func construct(var id) {
 		self.id = id;
 		self.device = new(Device).construct("mouse");
