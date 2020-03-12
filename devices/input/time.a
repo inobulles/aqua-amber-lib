@@ -1,0 +1,35 @@
+// get time
+
+import lib/device.a
+
+class Time {
+	func unix { // static
+		return ?Device.send_pointer("time", "unix");
+	}
+	
+	Device->var device;
+	
+	func construct {
+		self.device = new(Device).construct("time");
+		return self;
+	}
+	
+	var hour; var minute; var second;
+	var week_day; var month_day; var year_day;
+	var month; var year;
+	
+	func update {
+		var pointer = self.device.send_pointer("current");
+		
+		self.hour      = ?(pointer + 00);
+		self.minute    = ?(pointer + 08);
+		self.second    = ?(pointer + 16);
+		
+		self.week_day  = ?(pointer + 24);
+		self.month_day = ?(pointer + 32);
+		self.year_day  = ?(pointer + 40);
+		
+		self.month     = ?(pointer + 48);
+		self.year      = ?(pointer + 56);
+	}
+}

@@ -122,8 +122,9 @@ class Camera {
 			self.mv_matrix.translate 0, 0, -self._distance;
 		}
 		
+		if (self.type == self.TYPE_ORBIT) self.mv_matrix.translate -self._px, -self._py, -self._pz;
 		self.mv_matrix.rotate_2d self._rx, self._ry, self._rz;
-		self.mv_matrix.translate -self._px, -self._py, -self._pz;
+		if (self.type != self.TYPE_ORBIT) self.mv_matrix.translate -self._px, -self._py, -self._pz;
 		
 		self.mvp_matrix.set self.mv_matrix;
 		self.mvp_matrix.multiply self.p_matrix;
