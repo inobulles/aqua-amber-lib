@@ -8,6 +8,7 @@ class Camera {
 	
 	var TYPE_ORBIT = 0;
 	var TYPE_FIRST_PERSON = 1;
+	var TYPE_THIRD_PERSON = 2;
 	
 	// input methods
 	
@@ -51,7 +52,7 @@ class Camera {
 		self.type = type;
 		self.fov = Math.TAU / 4;
 		
-		if (self.type == self.TYPE_ORBIT) {
+		if (self.type == self.TYPE_ORBIT or self.type == self.TYPE_THIRD_PERSON) {
 			self.distance = 3.0; // default orbit distance
 		}
 		
@@ -62,14 +63,14 @@ class Camera {
 		// getting rotation inputs
 		
 		if (self.joystick) {
-			//~ if (self.type == self.TYPE_ORBIT) {
-				//~ self.rx = self.rx - self.joystick.axis(2) / fps * 5;
-				//~ self.ry = self.ry + self.joystick.axis(3) / fps * 5;
+			if (self.type == self.TYPE_ORBIT) {
+				self.rx = self.rx - self.joystick.axis(2) / fps * 5;
+				self.ry = self.ry + self.joystick.axis(3) / fps * 5;
 				
-			//~ } else {
+			} else {
 				self.rx = self.rx + self.joystick.axis(2) / fps * 4;
 				self.ry = self.ry - self.joystick.axis(3) / fps * 4;
-			//~ }
+			}
 		}
 		
 		if (self.ry >  Math.TAU / 4) self.ry =  Math.TAU / 4;
@@ -106,7 +107,7 @@ class Camera {
 		self._py = self._py + (self.py - self._py) / fps * 10;
 		self._pz = self._pz + (self.pz - self._pz) / fps * 10;
 		
-		if (self.type == self.TYPE_ORBIT) {
+		if (self.type == self.TYPE_ORBIT or self.type == self.TYPE_THIRD_PERSON) {
 			self._distance = self._distance + (self.distance - self._distance) / fps * 10;
 		}
 		
@@ -117,7 +118,7 @@ class Camera {
 		
 		self.mv_matrix.identity();
 		
-		if (self.type == self.TYPE_ORBIT) {
+		if (self.type == self.TYPE_ORBIT or self.type == self.TYPE_THIRD_PERSON) {
 			self.mv_matrix.translate 0, 0, -self._distance;
 		}
 		

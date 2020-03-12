@@ -1,0 +1,27 @@
+// simple library for interacting with the time device
+
+import lib/device.a
+
+class Time {
+	func unix return ?Device.send_pointer("clock", "unix"); // static
+	func now  return ?Device.send_pointer("clock", "now");  // static
+	
+	var hour; var minute; var second;
+	var month_day; var month; var year;
+	var week_day; var year_day;
+	
+	func current { // dynamic
+		var result = Device.send_pointer("clock", "current");
+		
+		self.hour      = ?(result + 00);
+		self.minute    = ?(result + 08);
+		self.second    = ?(result + 16);
+		
+		self.month_day = ?(result + 24);
+		self.month     = ?(result + 32);
+		self.year      = ?(result + 40);
+		
+		self.week_day  = ?(result + 48);
+		self.year_day  = ?(result + 56);
+	}
+}
